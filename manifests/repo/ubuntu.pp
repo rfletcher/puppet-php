@@ -34,6 +34,13 @@ class php::repo::ubuntu (
   }
 
   if ($ppa) {
+    $safe_ppa = regsubst($ppa, '\/', '-')
+
+    ::apt::key { '14AA40EC0831756756D7F66C4F4EA0AAE5267A6C': } ->
+    ::apt::pin { $safe_ppa:
+      originator => "LP-PPA-${safe_ppa}",
+      priority   => 600,
+    } ->
     ::apt::ppa { "ppa:${ppa}": }
   } else {
     ::apt::ppa { "ppa:${version_repo}": }
